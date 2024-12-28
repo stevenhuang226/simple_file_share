@@ -15,7 +15,7 @@
 #define MALLOC_ERR -3;
 
 char **file_array;
-int32_t nums_files;
+int32_t nums_files = 0;
 char *static_header_buffer;
 
 int server_fd;
@@ -45,10 +45,9 @@ int main()
 		goto close_srv_fd;
 	}
 
-	generate_file_array(&file_array, &nums_files, NULL);
 	static_header_buffer = malloc(FILE_HEADER_BUFFER_SIZE * sizeof(char));
 	if (static_header_buffer == NULL) {
-		goto clean_fna;
+		goto close_srv_fd;
 	}
 	if (file2buffer(static_header_buffer, FILE_HEADER_BUFFER_SIZE, FILE_HEADER) < 0) {
 		goto clean_hdr;
@@ -59,6 +58,12 @@ int main()
 		if (client_fd < 0) {
 			continue;
 		}
+
+		for (int i = 0; i < nums_files; i += 1) {
+			free(file_array[i]);
+		}
+		free(file_array);
+		generate_file_array(&file_array, &nums_files, NULL);
 
 		char *req_buffer;
 		req_buffer = malloc(REQ_BUFFER_SIZE * sizeof(char));
@@ -79,11 +84,6 @@ int main()
 
 clean_hdr:
 	free(static_header_buffer);
-clean_fna:
-	for (int i = 0; i < nums_files; i += 1) {
-		free(file_array[i]);
-	}
-	free(file_array);
 close_srv_fd:
 	close(server_fd);
 exit_fail:
