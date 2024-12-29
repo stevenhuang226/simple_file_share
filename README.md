@@ -12,7 +12,7 @@ Content-Length: <the value would be insert here>
 
 ```
 
-## Complete
+## Complie
 ### After edit config.h, you need to do it again
 ```
 gcc main.c list_file.c dynamic_insert.c -o <the output file name>
