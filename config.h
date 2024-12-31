@@ -13,3 +13,4 @@
 
 int8_t generate_file_array(char ***file_array, int32_t *nums_file_ret, int32_t *all_str_len);
 int8_t insert_fn_and_cl2buffer(char *buffer, int32_t buffer_size, const char *file_name, int32_t content_long);
+void decode_req(char *buffer);

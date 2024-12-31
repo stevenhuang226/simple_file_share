@@ -22,7 +22,7 @@ int server_fd;
 
 void cleanup(int sig);
 int8_t file2buffer(char *buffer, int32_t buffer_size, const char *path);
-int32_t req_find_file(const char *req);
+int32_t search_fna(const char *req);
 int8_t res_file(const int *client_fd, const int *file_code);
 
 int main()
@@ -74,7 +74,7 @@ int main()
 			continue;
 		}
 		req_buffer[req_bytes] = 0;
-		int32_t file_code = req_find_file(req_buffer);
+		int32_t file_code = search_fna(req_buffer);
 		if (file_code >= 0) {
 			res_file(&client_fd, &file_code);
 		}
@@ -119,39 +119,42 @@ int8_t file2buffer(char *buffer, int32_t buffer_size, const char *path)
 	buffer[read_bytes] = '\0';
 	return 0;
 }
-int32_t req_find_file(const char *req)
+int32_t search_fna(const char *req)
 {
-	if (req[5] == ' ') {
-		return FILE_NOT_EXISTS;
-	}
 	int req_size = strlen(req);
+
 	char *path;
 	path = malloc(PATH_BUFFER_SIZE * sizeof(char));
 	if (path == NULL) {
 		return MALLOC_ERR;
 	}
 
-	int8_t get_space = 0;
-	for ( int i = 5; i < req_size; i += 1) {
+	int8_t str_end = 0;
+
+	for (int i = 5; i < req_size; i+= 1) {
 		if (req[i] == ' ') {
-			memcpy(path, &req[5], i - 5);
+			memcpy(path, &req[5], i-5);
 			path[i-5] = '\0';
-			get_space = 1;
+			str_end = 1;
 			break;
 		}
-		else if (req[i-1] == '.' && req[i] == '.') {
+		if (req[i-1] == '.' && req[i] == '.') {
 			goto cleanup;
 		}
 	}
-	if (get_space == 0) {
+	if (str_end == 0) {
 		goto cleanup;
 	}
+
+	decode_req(path);
+
 	for (int i = 0; i < nums_files; i += 1) {
 		if (strcmp(path, file_array[i]) == 0) {
 			free(path);
 			return (int32_t)i;
 		}
 	}
+
 cleanup:
 	free(path);
 	return FILE_NOT_EXISTS;
