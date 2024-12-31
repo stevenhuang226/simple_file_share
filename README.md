@@ -17,6 +17,3 @@ Content-Length: <the value would be insert here>
 ```
 gcc main.c list_file.c dynamic_insert.c -o <the output file name>
 ```
-
-## Known issues
-- File name cannot include space( ) or underline(_)
