@@ -75,7 +75,7 @@ int main()
 		}
 		req_buffer[req_bytes] = 0;
 		int32_t file_code = req_find_file(req_buffer);
-		if (file_code > 0) {
+		if (file_code >= 0) {
 			res_file(&client_fd, &file_code);
 		}
 		free(req_buffer);
