@@ -73,7 +73,7 @@ int main()
 			close(client_fd);
 			continue;
 		}
-		req_buffer[req_bytes] = 0;
+		req_buffer[req_bytes] = '\0';
 		int32_t file_code = search_fna(req_buffer);
 		if (file_code >= 0) {
 			res_file(&client_fd, &file_code);
