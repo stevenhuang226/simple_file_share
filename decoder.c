@@ -15,6 +15,7 @@ void decode_req(char *buffer)
 		if (buffer[i-2] == '%' && buffer[i-1] == '2' && buffer[i] == '0') {
 			buffer[i-2] = ' ';
 			memcpy(&buffer[i-1], &buffer[i+1], buffer_len - i);
+			buffer_len -= 2;
 		}
 	}
 }
